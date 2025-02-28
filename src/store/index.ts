@@ -1,9 +1,11 @@
 import { createStore } from "redux"
 import { reducer } from "./reducers"
+import { composeWithDevTools } from 'redux-devtools-extension';
+
 
 //fn para crear un store y devolverlo
 export default function configureStore(){
-    const store = createStore(reducer)
+    const store = createStore(reducer, composeWithDevTools())
     return store
 }
 

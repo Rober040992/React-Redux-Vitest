@@ -1,28 +1,46 @@
-import type { Advert } from "@/pages/adverts/types"
-import type { Actions } from "./actions"
+import type { Advert } from "@/pages/adverts/types";
+import type { Actions } from "./actions";
+import { combineReducers } from "redux";
 
 type State = {
-    auth: boolean,
-    adverts: Advert[]
-}
+  auth: boolean;
+  adverts: Advert[];
+};
 
 const defaultState: State = {
-    auth: false,
-    adverts: []
+  auth: false,
+  adverts: [],
+};
+
+function auth(state = defaultState.auth, action: Actions): State["auth"] {
+  switch (action.type) {
+    case "auth/login":
+      return true;
+    case "auth/logout":
+      return false;
+    default:
+      return state;
+  }
 }
 
-export function reducer(state = defaultState, action: Actions): State {
-    switch (action.type) {
-        case 'auth/login':
-            return {...state, auth: true}
-        case 'auth/logout':
-            return {...state, auth: false}
-        case 'advert/loaded':
-            return {...state, adverts: action.payload}
-        case 'advert/created':
-            return {...state, adverts: [...state.adverts, action.payload]}
-    
-        default:
-            return state
-    }
+function advert(state = defaultState.adverts, action: Actions): State["adverts"] {
+  switch (action.type) {
+    case "advert/loaded":
+      return action.payload ;
+    case "advert/created":
+      return [...state, action.payload] ;
+    default:
+      return state;
+  }
 }
+ 
+// fn que une los reducers separados de auth y advert
+export const reducer = combineReducers({ auth, advert}) 
+//export function reducer(state = defaultState, action: Actions): State {
+//  return {
+//    auth: auth(state.auth, action),
+//    adverts: advert(state.adverts, action),
+//  };
+//}
+
+
