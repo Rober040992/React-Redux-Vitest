@@ -2,7 +2,7 @@ import type { Advert } from "@/pages/adverts/types";
 import type { Actions } from "./actions";
 import { combineReducers } from "redux";
 
-type State = {
+export type State = {
   auth: boolean;
   adverts: Advert[];
 };

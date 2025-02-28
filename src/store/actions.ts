@@ -23,7 +23,7 @@ type AdvertCreated = {
 export const authLogin = (): AuthLogin => ({
   type: "auth/login",
 });
-export const authLout = (): AuthLogout => ({
+export const authLogout = (): AuthLogout => ({
   type: "auth/logout",
 });
 
