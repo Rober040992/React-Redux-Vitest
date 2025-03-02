@@ -11,6 +11,7 @@ function LogoutButton() {
 
   const handleLogout = async () => {
     await logout();
+    // Despachamos `authLogout` para actualizar el estado de Redux
     dispatch(authLogout())
   };
 

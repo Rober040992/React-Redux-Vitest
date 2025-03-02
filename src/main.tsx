@@ -14,11 +14,12 @@ const accessToken = storage.get("auth");
 if (accessToken) {
   setAuthorizationHeader(accessToken);
 }
-const store = configureStore({ auth: !!accessToken });
+// estado de redux
+const store = configureStore({ auth: !!accessToken }); // si hay token
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <Provider store={store}>
+    <Provider store={store}> 
       <BrowserRouter>
         <ErrorBoundary>
             <App />
