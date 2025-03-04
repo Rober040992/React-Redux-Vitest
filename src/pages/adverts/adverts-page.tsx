@@ -7,7 +7,10 @@ import { getAdverts } from "./service";
 import { filterAdverts } from "./filters";
 import FiltersInputs from "./components/filters-inputs";
 import { AdvertCard } from "./components/advert-card";
-import type { Advert, Filters } from "./types";
+import type { Filters } from "./types";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { advertsLoaded } from "@/store/actions";
+import { getAdvertLoad } from "@/store/selectors";
 
 function NoAdverts() {
   return (
@@ -47,17 +50,19 @@ function NoMatches() {
 
 export default function AdvertsPage() {
   const navigate = useNavigate();
-  const [adverts, setAdverts] = useState<Advert[] | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [, setError] = useState<null>(null);
   const [filters, setFilters] = useState<Filters | null>(null);
+  //redux
+  const adverts = useAppSelector(getAdvertLoad);
+  const dispatch = useAppDispatch()
 
   useEffect(() => {
     async function loadAdverts() {
       try {
         setIsLoading(true);
         const adverts = await getAdverts();
-        setAdverts(adverts);
+        dispatch(advertsLoaded(adverts));
       } catch (error) {
         if (isApiClientError(error)) {
           if (error.code === "UNAUTHORIZED") {
@@ -72,7 +77,7 @@ export default function AdvertsPage() {
       }
     }
     loadAdverts();
-  }, [navigate]);
+  }, [navigate, dispatch]);
 
   if (!adverts || isLoading) {
     return "Loading....";
