@@ -12,6 +12,8 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import InputPhoto from "@/components/shared/input-photo";
+import { advertsCreated } from "@/store/actions";
+import { useAppDispatch } from "@/store";
 
 function validatePrice(value: FormDataEntryValue | null): number {
   try {
@@ -35,6 +37,7 @@ export default function NewAdvertPage() {
   const [tags, setTags] = useState<Tags>([]);
   const [loading, setLoading] = useState(false);
   const [, setError] = useState(null);
+  const dispatch = useAppDispatch();
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     setName(event.target.value);
@@ -61,6 +64,7 @@ export default function NewAdvertPage() {
         tags,
         photo,
       });
+      dispatch(advertsCreated(createdAdvert));
       navigate(`/adverts/${createdAdvert.id}`);
     } catch (error) {
       if (isApiClientError(error)) {
