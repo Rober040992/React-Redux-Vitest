@@ -23,7 +23,7 @@ function auth(state = defaultState.auth, action: Actions): State["auth"] {
   }
 }
 
-function advert(state = defaultState.adverts, action: Actions): State["adverts"] {
+function adverts(state = defaultState.adverts, action: Actions): State["adverts"] {
   switch (action.type) {
     case "advert/loaded":
       return action.payload ;
@@ -35,7 +35,7 @@ function advert(state = defaultState.adverts, action: Actions): State["adverts"]
 }
  
 // fn que une los reducers separados de auth y advert
-export const reducer = combineReducers({ auth, advert}) 
+export const reducer = combineReducers({ auth, adverts}) 
 //export function reducer(state = defaultState, action: Actions): State {
 //  return {
 //    auth: auth(state.auth, action),
