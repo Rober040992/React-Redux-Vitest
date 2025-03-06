@@ -5,16 +5,24 @@ import { combineReducers } from "redux";
 export type State = {
   auth: boolean;
   adverts: Advert[];
+  ui:{
+    pending: boolean;
+    error: Error | null;
+  }
 };
 
 const defaultState: State = {
   auth: false,
   adverts: [],
+  ui: {
+    pending: false,
+    error: null,
+  }
 };
 
 function auth(state = defaultState.auth, action: Actions): State["auth"] {
   switch (action.type) {
-    case "auth/login":
+    case "auth/login/fulfilled":
       return true;
     case "auth/logout":
       return false;
@@ -33,9 +41,24 @@ function adverts(state = defaultState.adverts, action: Actions): State["adverts"
       return state;
   }
 }
+
+export function ui(state = defaultState.ui, action: Actions): State["ui"] {
+  switch (action.type){
+    case "ui/reset/error":
+      return { ...state, error: null };
+    case "auth/login/pending":
+      return { pending: true, error: null };
+    case "auth/login/fulfilled":
+      return { pending: false, error: null };
+    case "auth/login/rejected":
+      return { pending: false, error: action.payload };
+    default:
+      return state;
+  }
+}
  
 // fn que une los reducers separados de auth y advert
-export const reducer = combineReducers({ auth, adverts}) 
+export const reducer = combineReducers({ auth, adverts, ui }) 
 //export function reducer(state = defaultState, action: Actions): State {
 //  return {
 //    auth: auth(state.auth, action),
