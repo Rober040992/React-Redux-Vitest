@@ -14,6 +14,7 @@ import {
   authLoginFulfilled,
   authLoginPending,
   authLoginRejected,
+  uiResetError,
 } from "@/store/actions";
 import { getUi } from "@/store/selectors";
 
@@ -94,8 +95,9 @@ function LoginForm({
               : "Enter your credentials"}
         </ActionButton>
         {error && (
-          <div className="mt-2 text-sm text-red-500">
+          <div className="mt-2 text-sm text-red-500" onClick={() => dispatch(uiResetError())}>
             {error.message || "An error has occurred"}
+            
           </div>
         )}
       </form>
