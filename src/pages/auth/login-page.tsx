@@ -95,7 +95,7 @@ function LoginForm({
               : "Enter your credentials"}
         </ActionButton>
         {error && (
-          <div className="mt-2 text-sm text-red-500" onClick={() => dispatch(uiResetError())}>
+          <div className="flex items-center justify-center text-center border border-red-500 bg-red-100 text-red-800 font-semibold p-4 rounded-md mt-4 text-sm cursor-pointer" onClick={() => dispatch(uiResetError())}>
             {error.message || "An error has occurred"}
             
           </div>
