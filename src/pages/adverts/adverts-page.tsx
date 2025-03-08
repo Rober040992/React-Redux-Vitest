@@ -55,7 +55,7 @@ export default function AdvertsPage() {
   const [filters, setFilters] = useState<Filters | null>(null);
   //redux
   const adverts = useAppSelector(getAdvertLoad);
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     async function loadAdverts() {

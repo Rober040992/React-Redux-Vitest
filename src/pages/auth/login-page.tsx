@@ -1,21 +1,14 @@
 import { type ChangeEvent, type FormEvent, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { login } from "./service";
 import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import { Toaster } from "@/components/ui/sonner";
-import { isApiClientError } from "@/api/error";
 import FormField from "@/components/shared/form-field";
 import ActionButton from "@/components/shared/action-button";
 import Logo from "@/components/shared/nodepop-react";
 import type { Credentials } from "./types";
 import { useAppDispatch, useAppSelector } from "@/store";
-import {
-  authLoginFulfilled,
-  authLoginPending,
-  authLoginRejected,
-  uiResetError,
-} from "@/store/actions";
+import { middlewareAuthLogin, uiResetError } from "@/store/actions";
 import { getUi } from "@/store/selectors";
 
 function LoginForm({
@@ -41,14 +34,9 @@ function LoginForm({
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const remember = !!formData.get("remember");
-    try {
-      // Ya no necesito setSubmitting(true) porque dispatch(authLoginPending()) hace eso
-      await onSubmit({ ...credentials, remember });
-    } catch (error) {
-      if (isApiClientError(error)) {
-        dispatch(authLoginRejected(error));
-      }
-    }
+    // Ya no necesito setSubmitting(true) porque dispatch(authLoginPending()) hace eso
+    // trycatch controlado por el middlewareAuthLogin (rejected/fulfilled)
+    await onSubmit({ ...credentials, remember });
   };
 
   const { email, password } = credentials;
@@ -95,9 +83,11 @@ function LoginForm({
               : "Enter your credentials"}
         </ActionButton>
         {error && (
-          <div className="flex items-center justify-center text-center border border-red-500 bg-red-100 text-red-800 font-semibold p-4 rounded-md mt-4 text-sm cursor-pointer" onClick={() => dispatch(uiResetError())}>
+          <div
+            className="mt-4 flex cursor-pointer items-center justify-center rounded-md border border-red-500 bg-red-100 p-4 text-center text-sm font-semibold text-red-800"
+            onClick={() => dispatch(uiResetError())}
+          >
             {error.message || "An error has occurred"}
-            
           </div>
         )}
       </form>
@@ -122,9 +112,7 @@ export default function LoginPage() {
         </header>
         <LoginForm
           onSubmit={async ({ remember, ...credentials }) => {
-            dispatch(authLoginPending());
-            await login(credentials, remember);
-            dispatch(authLoginFulfilled());
+            await dispatch(middlewareAuthLogin(credentials, remember));
             navigate(location.state?.from ?? "/", { replace: true });
           }}
         />

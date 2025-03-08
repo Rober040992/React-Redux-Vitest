@@ -7,12 +7,12 @@ import { authLogout } from "@/store/actions";
 import { getIsLogged } from "@/store/selectors";
 
 function LogoutButton() {
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch();
 
   const handleLogout = async () => {
     await logout();
     // Despachamos `authLogout` para actualizar el estado de Redux
-    dispatch(authLogout())
+    dispatch(authLogout());
   };
 
   return (
@@ -31,7 +31,7 @@ function LogoutButton() {
 }
 
 export default function AuthButton() {
-  const isLogged = useAppSelector(getIsLogged)
+  const isLogged = useAppSelector(getIsLogged);
 
   if (isLogged) {
     return <LogoutButton />;

@@ -56,7 +56,7 @@ export default function AdvertPage() {
   const navigate = useNavigate();
   const params = useParams();
   // const [advert, setAdvert] = useState<Advert | null>(null);
-  
+
   const [loading, setLoading] = useState(false);
   const [, setError] = useState(null);
   const [deleting, setDeleting] = useState(false);

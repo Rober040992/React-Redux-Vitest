@@ -5,10 +5,10 @@ import { combineReducers } from "redux";
 export type State = {
   auth: boolean;
   adverts: Advert[];
-  ui:{
+  ui: {
     pending: boolean;
     error: Error | null;
-  }
+  };
 };
 
 const defaultState: State = {
@@ -17,7 +17,7 @@ const defaultState: State = {
   ui: {
     pending: false,
     error: null,
-  }
+  },
 };
 
 function auth(state = defaultState.auth, action: Actions): State["auth"] {
@@ -31,19 +31,22 @@ function auth(state = defaultState.auth, action: Actions): State["auth"] {
   }
 }
 
-function adverts(state = defaultState.adverts, action: Actions): State["adverts"] {
+function adverts(
+  state = defaultState.adverts,
+  action: Actions,
+): State["adverts"] {
   switch (action.type) {
     case "advert/loaded":
-      return action.payload ;
+      return action.payload;
     case "advert/created":
-      return [...state, action.payload] ;
+      return [...state, action.payload];
     default:
       return state;
   }
 }
 
 export function ui(state = defaultState.ui, action: Actions): State["ui"] {
-  switch (action.type){
+  switch (action.type) {
     case "ui/reset/error":
       return { ...state, error: null };
     case "auth/login/pending":
@@ -56,14 +59,12 @@ export function ui(state = defaultState.ui, action: Actions): State["ui"] {
       return state;
   }
 }
- 
+
 // fn que une los reducers separados de auth y advert
-export const reducer = combineReducers({ auth, adverts, ui }) 
+export const reducer = combineReducers({ auth, adverts, ui });
 //export function reducer(state = defaultState, action: Actions): State {
 //  return {
 //    auth: auth(state.auth, action),
 //    adverts: advert(state.adverts, action),
 //  };
 //}
-
-

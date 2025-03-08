@@ -1,4 +1,8 @@
+import { isApiClientError } from "@/api/error";
 import type { Advert } from "@/pages/adverts/types";
+import { login } from "@/pages/auth/service";
+import type { Credentials } from "@/pages/auth/types";
+import type { AppThunk } from ".";
 
 // action Types
 // User Auth authentication
@@ -12,16 +16,32 @@ type AuthLoginRejected = {
   type: "auth/login/rejected";
   payload: Error;
 };
+
+export function middlewareAuthLogin(
+  credentials: Credentials,
+  remember: boolean,
+): AppThunk<Promise<void>> {
+  return async function (dispatch: any) {
+    dispatch(authLoginPending());
+    try {
+      await login(credentials, remember);
+      dispatch(authLoginFulfilled());
+    } catch (error) {
+      if (isApiClientError(error)) dispatch(authLoginRejected(error));
+    }
+  };
+}
+
 // User logOut
 type AuthLogout = {
   type: "auth/logout";
 };
+
 // Adverts
 type AdvertsLoaded = {
   type: "advert/loaded";
   payload: Advert[];
 };
-
 type AdvertCreated = {
   type: "advert/created";
   payload: Advert;
@@ -29,7 +49,7 @@ type AdvertCreated = {
 // ui
 type UiResetError = {
   type: "ui/reset/error";
-}
+};
 
 //Action creators
 // auth login
@@ -68,4 +88,4 @@ export type Actions =
   | AuthLogout
   | AdvertsLoaded
   | AdvertCreated
-  | UiResetError
+  | UiResetError;

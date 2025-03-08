@@ -10,7 +10,7 @@ export async function login(credentials: Credentials, remember: boolean) {
   // TODO: Make the API call to login the user and store the access token
   const response = await client.post<Login>("/auth/login", credentials);
   const { accessToken } = response.data;
-  
+
   storage.remove("auth");
   if (remember) {
     storage.set("auth", accessToken);
