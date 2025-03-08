@@ -3,6 +3,7 @@ import type { Advert } from "@/pages/adverts/types";
 import { login } from "@/pages/auth/service";
 import type { Credentials } from "@/pages/auth/types";
 import type { AppThunk } from ".";
+import { getAdverts } from "@/pages/adverts/service";
 
 // action Types
 // User Auth authentication
@@ -37,11 +38,19 @@ type AuthLogout = {
   type: "auth/logout";
 };
 
-// Adverts
-type AdvertsLoaded = {
-  type: "advert/loaded";
+// Adverts actions
+type AdvertsLoadedFulfilled = {
+  type: "advert/loaded/fulfilled";
   payload: Advert[];
 };
+type AdvertLoadingPending = {
+  type: "advert/loading/pending";
+};
+type AdvertLoadingRejected = {
+  type: "advert/loading/rejected";
+  payload: Error;
+};
+
 type AdvertCreated = {
   type: "advert/created";
   payload: Advert;
@@ -52,7 +61,7 @@ type UiResetError = {
 };
 
 //Action creators
-// auth login
+// async auth login
 export const authLoginPending = (): AuthLoginPending => ({
   type: "auth/login/pending",
 });
@@ -66,16 +75,39 @@ export const authLoginRejected = (error: Error): AuthLoginRejected => ({
 export const authLogout = (): AuthLogout => ({
   type: "auth/logout",
 });
-// adverts
-export const advertsLoaded = (adverts: Advert[]): AdvertsLoaded => ({
-  type: "advert/loaded",
+
+// async adverts creators
+export const advertLoadingPending = (): AdvertLoadingPending => ({
+  type: "advert/loading/pending",
+});
+export const advertsLoadedFulfilled = (
+  adverts: Advert[],
+): AdvertsLoadedFulfilled => ({
+  type: "advert/loaded/fulfilled",
   payload: adverts,
+});
+export const advertLoadRejected = (error: Error): AdvertLoadingRejected => ({
+  type: "advert/loading/rejected",
+  payload: error,
 });
 
 export const advertsCreated = (advert: Advert): AdvertCreated => ({
   type: "advert/created",
   payload: advert,
 });
+
+export function middlewareAdvertLoad(): AppThunk<Promise<void>> {
+  return async function (dispatch) {
+    dispatch(advertLoadingPending());
+    try {
+      const adverts = await getAdverts();
+      console.log(adverts);
+      dispatch(advertsLoadedFulfilled(adverts));
+    } catch (error) {
+      if (isApiClientError(error)) dispatch(advertLoadRejected(error));
+    }
+  };
+}
 
 export const uiResetError = (): UiResetError => ({
   type: "ui/reset/error",
@@ -86,6 +118,8 @@ export type Actions =
   | AuthLoginFulFilled
   | AuthLoginRejected
   | AuthLogout
-  | AdvertsLoaded
+  | AdvertsLoadedFulfilled
   | AdvertCreated
-  | UiResetError;
+  | UiResetError
+  | AdvertLoadingPending
+  | AdvertLoadingRejected;

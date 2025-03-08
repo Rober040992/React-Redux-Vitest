@@ -36,7 +36,7 @@ function adverts(
   action: Actions,
 ): State["adverts"] {
   switch (action.type) {
-    case "advert/loaded":
+    case "advert/loaded/fulfilled":
       return action.payload;
     case "advert/created":
       return [...state, action.payload];

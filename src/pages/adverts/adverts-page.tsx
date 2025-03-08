@@ -3,14 +3,13 @@ import { Link, useNavigate } from "react-router";
 import { Euro, SearchX } from "lucide-react";
 import { isApiClientError } from "@/api/error";
 import { Button } from "@/components/ui/button";
-import { getAdverts } from "./service";
 import { filterAdverts } from "./filters";
 import FiltersInputs from "./components/filters-inputs";
 import { AdvertCard } from "./components/advert-card";
 import type { Filters } from "./types";
 import { useAppDispatch, useAppSelector } from "@/store";
-import { advertsLoaded } from "@/store/actions";
 import { getAdvertLoad } from "@/store/selectors";
+import { middlewareAdvertLoad } from "@/store/actions";
 
 function NoAdverts() {
   return (
@@ -60,9 +59,7 @@ export default function AdvertsPage() {
   useEffect(() => {
     async function loadAdverts() {
       try {
-        setIsLoading(true);
-        const adverts = await getAdverts();
-        dispatch(advertsLoaded(adverts));
+        await dispatch(middlewareAdvertLoad());
       } catch (error) {
         if (isApiClientError(error)) {
           if (error.code === "UNAUTHORIZED") {
