@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import { deleteAdvert } from "./service";
 import { isApiClientError } from "@/api/error";
 import ConfirmationButton from "@/components/shared/confirmation-button";
-import type { Advert, Tags } from "./types";
+import type {  Tags } from "./types";
 import { Badge } from "@/components/ui/badge";
 import { Euro, Trash2 } from "lucide-react";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
@@ -57,7 +57,7 @@ export default function AdvertPage() {
   const params = useParams();
   // const [advert, setAdvert] = useState<Advert | null>(null);
 
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const [, setError] = useState(null);
   const [deleting, setDeleting] = useState(false);
   const advertId = params.advertId ?? "";

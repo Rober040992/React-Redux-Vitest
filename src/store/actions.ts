@@ -18,6 +18,20 @@ type AuthLoginRejected = {
   payload: Error;
 };
 
+//Action creators
+// async auth login
+export const authLoginPending = (): AuthLoginPending => ({
+  type: "auth/login/pending",
+});
+export const authLoginFulfilled = (): AuthLoginFulFilled => ({
+  type: "auth/login/fulfilled",
+});
+export const authLoginRejected = (error: Error): AuthLoginRejected => ({
+  type: "auth/login/rejected",
+  payload: error,
+});
+
+// middleware auth login
 export function middlewareAuthLogin(
   credentials: Credentials,
   remember: boolean,
@@ -37,6 +51,9 @@ export function middlewareAuthLogin(
 type AuthLogout = {
   type: "auth/logout";
 };
+export const authLogout = (): AuthLogout => ({
+  type: "auth/logout",
+});
 
 // Adverts actions
 type AdvertsLoadedFulfilled = {
@@ -50,31 +67,6 @@ type AdvertLoadingRejected = {
   type: "advert/loading/rejected";
   payload: Error;
 };
-
-type AdvertCreated = {
-  type: "advert/created";
-  payload: Advert;
-};
-// ui
-type UiResetError = {
-  type: "ui/reset/error";
-};
-
-//Action creators
-// async auth login
-export const authLoginPending = (): AuthLoginPending => ({
-  type: "auth/login/pending",
-});
-export const authLoginFulfilled = (): AuthLoginFulFilled => ({
-  type: "auth/login/fulfilled",
-});
-export const authLoginRejected = (error: Error): AuthLoginRejected => ({
-  type: "auth/login/rejected",
-  payload: error,
-});
-export const authLogout = (): AuthLogout => ({
-  type: "auth/logout",
-});
 
 // async adverts creators
 export const advertLoadingPending = (): AdvertLoadingPending => ({
@@ -91,11 +83,7 @@ export const advertLoadRejected = (error: Error): AdvertLoadingRejected => ({
   payload: error,
 });
 
-export const advertsCreated = (advert: Advert): AdvertCreated => ({
-  type: "advert/created",
-  payload: advert,
-});
-
+// middleware adverts load
 export function middlewareAdvertLoad(): AppThunk<Promise<void>> {
   return async function (dispatch, getState) {
     const state = getState();
@@ -112,6 +100,21 @@ export function middlewareAdvertLoad(): AppThunk<Promise<void>> {
     }
   };
 }
+
+type AdvertCreated = {
+  type: "advert/created";
+  payload: Advert;
+};
+export const advertsCreated = (advert: Advert): AdvertCreated => ({
+  type: "advert/created",
+  payload: advert,
+});
+
+
+// ui
+type UiResetError = {
+  type: "ui/reset/error";
+};
 
 export const uiResetError = (): UiResetError => ({
   type: "ui/reset/error",
