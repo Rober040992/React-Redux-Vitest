@@ -4,7 +4,7 @@ import { combineReducers } from "redux";
 
 export type State = {
   auth: boolean;
-  adverts: Advert[];
+  adverts: Advert[] | null;
   ui: {
     pending: boolean;
     error: Error | null;
@@ -13,7 +13,7 @@ export type State = {
 
 const defaultState: State = {
   auth: false,
-  adverts: [],
+  adverts: null,
   ui: {
     pending: false,
     error: null,
@@ -39,7 +39,7 @@ function adverts(
     case "advert/loaded/fulfilled":
       return action.payload;
     case "advert/created":
-      return [...state, action.payload];
+      return [...state ?? [], action.payload];
     default:
       return state;
   }

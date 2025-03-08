@@ -97,7 +97,11 @@ export const advertsCreated = (advert: Advert): AdvertCreated => ({
 });
 
 export function middlewareAdvertLoad(): AppThunk<Promise<void>> {
-  return async function (dispatch) {
+  return async function (dispatch, getState) {
+    const state = getState();
+    if (state.adverts) {
+      return;
+    }
     dispatch(advertLoadingPending());
     try {
       const adverts = await getAdverts();
