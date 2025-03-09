@@ -20,7 +20,7 @@ const defaultState: State = {
   },
 };
 
-function auth(state = defaultState.auth, action: Actions): State["auth"] {
+export function auth(state = defaultState.auth, action: Actions): State["auth"] {
   switch (action.type) {
     case "auth/login/fulfilled":
       return true;
