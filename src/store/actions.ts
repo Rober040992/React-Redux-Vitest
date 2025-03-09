@@ -4,7 +4,7 @@ import { login } from "@/pages/auth/service";
 import type { Credentials } from "@/pages/auth/types";
 import type { AppThunk } from ".";
 import { getAdverts } from "@/pages/adverts/service";
-
+import { createAdvert } from "@/pages/adverts/service";
 // action Types
 // User Auth authentication
 type AuthLoginPending = {
@@ -101,15 +101,49 @@ export function middlewareAdvertLoad(): AppThunk<Promise<void>> {
   };
 }
 
-type AdvertCreated = {
-  type: "advert/created";
+// Create advert
+type AdvertCreatedPending = {
+  type: "advert/created/pending";
+};
+type AdvertCreatedFulfilled = {
+  type: "advert/created/fulfilled";
   payload: Advert;
 };
-export const advertsCreated = (advert: Advert): AdvertCreated => ({
-  type: "advert/created",
+type AdvertCreatedRejected = {
+  type: "advert/created/rejected";
+  payload: Error;
+};
+
+export const advertCreatedPending = (): AdvertCreatedPending => ({
+  type: "advert/created/pending",
+});
+export const advertsCreatedFulFilled = (advert: Advert): AdvertCreatedFulfilled => ({
+  type: "advert/created/fulfilled",
   payload: advert,
 });
+export const advertCreatedRejected = (error: Error): AdvertCreatedRejected => ({
+  type: "advert/created/rejected",
+  payload: error,
+});
 
+export function middlewareAdvertCreate(advertContent: Pick<Advert, "tags" | "name" | "sale" | "price"> & { photo?: File }): AppThunk<Promise<Advert>> {
+  return async function (dispatch) {
+    dispatch(advertCreatedPending());
+    try {
+      const createdAdvert = await createAdvert(advertContent);
+      dispatch(advertsCreatedFulFilled(createdAdvert));
+      // Recargamos la lista de anuncios para asegurarnos de que la UI esté actualizada
+      const adverts = await getAdverts();
+      dispatch(advertsLoadedFulfilled(adverts));
+      return createdAdvert
+    } catch (error) {
+      if (isApiClientError(error)) {
+        dispatch(advertCreatedRejected(error));
+      }
+      throw error
+    }
+  };
+}
 
 // ui
 type UiResetError = {
@@ -126,7 +160,9 @@ export type Actions =
   | AuthLoginRejected
   | AuthLogout
   | AdvertsLoadedFulfilled
-  | AdvertCreated
-  | UiResetError
   | AdvertLoadingPending
-  | AdvertLoadingRejected;
+  | AdvertLoadingRejected
+  | UiResetError
+  | AdvertCreatedPending
+  | AdvertCreatedFulfilled
+  | AdvertCreatedRejected;

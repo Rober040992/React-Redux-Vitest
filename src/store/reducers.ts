@@ -38,7 +38,7 @@ function adverts(
   switch (action.type) {
     case "advert/loaded/fulfilled":
       return action.payload;
-    case "advert/created":
+    case "advert/created/fulfilled":
       return [...state ?? [], action.payload];
     default:
       return state;

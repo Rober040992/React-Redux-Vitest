@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { isApiClientError } from "@/api/error";
-import { createAdvert } from "./service";
 import type { ChangeEvent, FormEvent } from "react";
 import type { Tags } from "./types";
 import TagsSelector from "./components/tags-selector";
@@ -12,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import InputPhoto from "@/components/shared/input-photo";
-import { advertsCreated } from "@/store/actions";
+import { middlewareAdvertCreate } from "@/store/actions";
 import { useAppDispatch } from "@/store";
 
 function validatePrice(value: FormDataEntryValue | null): number {
@@ -54,18 +53,17 @@ export default function NewAdvertPage() {
     const sale = formData.get("sale") === "sale";
     const price = validatePrice(formData.get("price"));
     const photo = validatePhoto(formData.get("photo"));
-
     try {
       setLoading(true);
-      const createdAdvert = await createAdvert({
+      const advertData = await dispatch(middlewareAdvertCreate({
         name,
         sale,
         price,
         tags,
         photo,
-      });
-      dispatch(advertsCreated(createdAdvert));
-      navigate(`/adverts/${createdAdvert.id}`);
+      }));
+      console.log(advertData)
+      navigate(`/adverts/${advertData.id}`);
     } catch (error) {
       if (isApiClientError(error)) {
         if (error.code === "UNAUTHORIZED") {
